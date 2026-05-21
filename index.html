@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>MARTIN — A Cat's Introduction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;900&family=Inter:wght@300;400;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:auto;-webkit-overflow-scrolling:touch}
+body{background:#0a0a0a;font-family:'Inter','Noto Sans SC',sans-serif;-webkit-font-smoothing:antialiased;color:#f5f0eb;overscroll-behavior:none}
+:root{--a1:#FF6B2B;--a2:#F59E0B;--a3:#FF6B6B;--a4:#E8A850}
+
+.video-layer{position:fixed;inset:0;z-index:0;overflow:hidden;background:#000}
+.video-layer video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.video-layer video.loop-vid{transition:opacity .5s ease;will-change:opacity}
+#vIntro{opacity:1}
+#vOutro{opacity:0}
+.seg-vid{opacity:0;transition:opacity .35s ease;will-change:opacity;z-index:2}
+
+.overlay{position:fixed;inset:0;z-index:10;pointer-events:none;display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr auto 1fr;padding:clamp(.6rem,2vw,1.8rem)}
+
+/* ── Card: spring entrance ── */
+.card{pointer-events:auto;background:0;padding:0;opacity:0;transform:translateY(11px) scale(.96);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .85s cubic-bezier(.16,1,.3,1);will-change:opacity;align-self:center;max-width:38ch}
+.card.visible{opacity:1;transform:translateY(0) scale(1)}
+
+/* ── Stagger children ── */
+.card-tag{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.85rem;letter-spacing:.15em;text-transform:uppercase;color:var(--a1);text-shadow:0 1px 6px rgba(0,0,0,.55);margin-bottom:.4rem;opacity:0;transform:translateX(-8px);transition:opacity .45s cubic-bezier(.16,1,.3,1),transform .5s cubic-bezier(.16,1,.3,1);transition-delay:0s}
+.card.visible .card-tag{opacity:1;transform:translateX(0)}
+
+.card-en{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(3.5rem,8vw,9rem);line-height:.88;letter-spacing:-.02em;text-transform:uppercase;color:#fff;text-shadow:0 3px 16px rgba(0,0,0,.8),0 1px 4px rgba(0,0,0,.5);opacity:0;transform:translateY(6px);transition:opacity .55s cubic-bezier(.16,1,.3,1),transform .65s cubic-bezier(.16,1,.3,1);transition-delay:.05s}
+.card.visible .card-en{opacity:1;transform:translateY(0)}
+
+.card-cn{font-family:'Noto Sans SC',sans-serif;font-weight:500;font-size:clamp(1.2rem,2vw,1.8rem);line-height:1.5;letter-spacing:.03em;color:rgba(255,255,255,.82);text-shadow:0 1px 10px rgba(0,0,0,.7);margin-top:.35em;max-width:26ch;opacity:0;transform:translateY(4px);transition:opacity .5s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1);transition-delay:.1s}
+.card.visible .card-cn{opacity:1;transform:translateY(0)}
+
+/* ── Highlight glow pulse ── */
+@keyframes hlPulse{0%,100%{text-shadow:0 3px 16px rgba(0,0,0,.8)}40%{text-shadow:0 3px 24px rgba(0,0,0,.85),0 0 18px rgba(255,107,43,.35)}}
+.card.visible .card-en .hl{animation:hlPulse 2.2s ease-in-out forwards}
+.card-en .hl{color:var(--a1);text-shadow:0 3px 16px rgba(0,0,0,.8)}
+.card-cn .hl{color:var(--a1);font-weight:700}
+
+/* ── Accent dot animate ── */
+.card::before{content:'';display:block;width:6px;height:6px;border-radius:50%;margin-bottom:.5rem;opacity:0;transform:scale(0);transition:opacity .3s cubic-bezier(.16,1,.3,1),transform .4s cubic-bezier(.16,1,.3,1)}
+.card.visible::before{opacity:1;transform:scale(1)}
+
+#c1::before{background:var(--a1)}#c1 .hl{color:var(--a1)}
+#c2::before{background:var(--a2)}#c2 .hl{color:var(--a2)}
+#c3::before{background:var(--a3)}#c3 .hl{color:var(--a3)}
+#c4::before{background:var(--a4)}#c4 .hl{color:var(--a4)}
+#c5::before{background:var(--a1)}#c5 .hl{color:var(--a1)}
+#c6::before{background:var(--a2)}#c6 .hl{color:var(--a2)}
+
+#c1{grid-column:1;grid-row:2;justify-self:start;text-align:left}
+#c2{grid-column:1;grid-row:2;justify-self:start;text-align:left}
+#c3{grid-column:3;grid-row:2;justify-self:end;text-align:left}
+#c4{grid-column:1;grid-row:2;justify-self:start;text-align:left}
+#c5{grid-column:3;grid-row:2;justify-self:end;text-align:left}
+#c6{grid-column:1/-1;grid-row:3;justify-self:center;text-align:center;align-self:start;display:flex;flex-direction:column;align-items:center;gap:.4rem;padding:1rem 0;transform:translateY(-12vh)}
+#c6::before{display:none}
+#c6 .card-en{font-size:clamp(3rem,6vw,7rem)}
+
+.cta-btn{display:inline-flex;align-items:center;gap:.75em;background:linear-gradient(135deg,var(--a1),#E55A1F);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:clamp(1rem,1.5vw,1.25rem);text-transform:uppercase;letter-spacing:.08em;padding:.85em 2em;border-radius:100px;border:0;cursor:pointer;text-decoration:none;pointer-events:auto;transition:transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s ease;box-shadow:0 4px 20px rgba(255,107,43,.35)}
+.cta-btn:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 8px 32px rgba(255,107,43,.55)}
+.cta-btn:active{transform:translateY(1px) scale(.98)}
+.cta-btn .arrow{display:inline-block;font-size:1.2em;transition:transform .35s cubic-bezier(.16,1,.3,1)}
+.cta-btn:hover .arrow{transform:translateX(6px)}
+.social-row{display:flex;gap:1.2rem;align-items:center}
+.social-icon{width:36px;height:36px;border:1.5px solid rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#c4bfb8;text-decoration:none;pointer-events:auto;transition:all .35s cubic-bezier(.16,1,.3,1)}
+.social-icon:hover{background:var(--a1);border-color:var(--a1);color:#fff;transform:scale(1.12)}
+.badge-row{display:flex;gap:clamp(1rem,3.5vw,2.5rem);align-items:center;flex-wrap:wrap;justify-content:center;opacity:.45}
+.badge{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(.7rem,1vw,.85rem);letter-spacing:.15em;text-transform:uppercase;color:#a09b95;display:flex;align-items:center;gap:.4em}
+.badge::before{content:'';display:block;width:6px;height:6px;background:var(--a1);border-radius:50%}
+
+@media(max-width:768px){
+.overlay{grid-template-columns:1fr;grid-template-rows:auto;padding:.8rem;align-items:end;justify-items:center;gap:1rem}
+#c1,#c2,#c3,#c4,#c5,#c6{grid-column:1!important;grid-row:auto!important;justify-self:center!important;text-align:center!important;align-self:end}
+#c1::before,#c2::before,#c3::before,#c4::before,#c5::before{margin-left:auto;margin-right:auto}
+#c6{transform:none}
+.card{max-width:90vw}.card-cn{max-width:20ch;margin:0 auto}
+.card-en{font-size:clamp(2.2rem,6vw,4.5rem)}
+}
+</style>
+</head>
+<body>
+
+<div class="video-layer">
+  <video id="vIntro" class="loop-vid" src="./开头.mp4" loop muted playsinline preload="auto" autoplay></video>
+  <video id="vOutro" class="loop-vid" src="./结尾.mp4" loop muted playsinline preload="auto"></video>
+  <video id="seg0" class="seg-vid active" src="./1.mp4" muted playsinline preload="auto"></video>
+  <video id="seg1" class="seg-vid" src="./2.mp4" muted playsinline preload="auto"></video>
+  <video id="seg2" class="seg-vid" src="./3.mp4" muted playsinline preload="auto"></video>
+  <video id="seg3" class="seg-vid" src="./4.mp4" muted playsinline preload="auto"></video>
+  <video id="seg4" class="seg-vid" src="./5.mp4" muted playsinline preload="auto"></video>
+  <video id="seg5" class="seg-vid" src="./6.mp4" muted playsinline preload="auto"></video>
+</div>
+
+<div class="overlay">
+  <div class="card" id="c1"><div class="card-tag">INTRO</div><div class="card-en">Hi, I'm<br><span class="hl">Martin</span></div><div class="card-cn">一只<span class="hl">不普通</span>的猫，<br>这是我的故事。</div></div>
+  <div class="card" id="c2"><div class="card-tag">01 &middot; APPEARANCE</div><div class="card-en">Every<br><span class="hl">Whisker</span></div><div class="card-cn">每一根<span class="hl">胡须</span>，<br>都藏着你不知道的冒险。</div></div>
+  <div class="card" id="c3"><div class="card-tag">02 &middot; DAILY</div><div class="card-en"><span class="hl">Perfect</span><br>Day</div><div class="card-cn"><span class="hl">完美</span>日常：<br>睡觉、吃饭、巡视领地。</div></div>
+  <div class="card" id="c4"><div class="card-tag">03 &middot; PERSONALITY</div><div class="card-en">More Than<br><span class="hl">Cute</span></div><div class="card-cn"><span class="hl">独立</span>是我的底色，<br><span class="hl">温柔</span>是偶尔的让步。</div></div>
+  <div class="card" id="c5"><div class="card-tag">04 &middot; FAVORITES</div><div class="card-en">What I<br><span class="hl">Love</span></div><div class="card-cn"><span class="hl">纸箱</span>、激光笔、<br>午后三点的<span class="hl">阳光</span>。</div></div>
+  <div class="card" id="c6"><div class="card-en">Nice to<br><span class="hl">Meet You</span></div><div class="card-cn">很高兴<span class="hl">认识你</span>，<br>来这些地方找我玩。</div>
+    <a class="cta-btn" href="#" target="_blank">Follow Martin <span class="arrow">→</span></a>
+    <div class="social-row"><a class="social-icon" href="#" title="Xiaohongshu" target="_blank">R</a><a class="social-icon" href="#" title="Weibo" target="_blank">W</a><a class="social-icon" href="#" title="Instagram" target="_blank">I</a></div>
+    <div class="badge-row"><span class="badge">MARTIN</span><span class="badge">THE CAT</span><span class="badge">MEOW</span></div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+// ── DOM
+var vIntro=document.getElementById('vIntro'), vOutro=document.getElementById('vOutro');
+var segVids=[], segDurs=[], loaded=0, allLoaded=false;
+for(var i=0;i<6;i++){
+  segVids[i]=document.getElementById('seg'+i);
+  segDurs[i]=0;
+}
+var cards=document.querySelectorAll('.card'), cardsArr=[].slice.call(cards);
+
+var currentSeg=-1, rafId=null, lastScrollY=-1, idleFrames=0;
+var INTRO_VH=30, OUTRO_VH=30, VH_PER_SEC=120;
+var IDLE_LIMIT=120;
+var smoothP=0; // 缓动进度，lerp逼近滚动进度
+
+// 每段的像素起止边界（6段+intro+outro共8个zone边界）
+var zo=[0,0,0,0,0,0,0]; // zoneOffsets: intro结束, seg0结束, seg1结束 ... seg5结束
+var totalH=0;
+
+// ── 收集6段视频时长
+segVids.forEach(function(v,i){
+  v.addEventListener('loadedmetadata',function(){
+    segDurs[i]=v.duration||0;
+    // 每段视频从0开始，暂停
+    segVids[i].currentTime=0;
+    segVids[i].pause();
+    loaded++;
+    if(loaded>=6){allLoaded=true;recalc();if(!rafId)startLoop();}
+  });
+});
+setTimeout(function(){
+  if(!allLoaded){
+    segVids.forEach(function(v,i){
+      if(!segDurs[i]&&v.duration&&isFinite(v.duration)){segDurs[i]=v.duration;loaded++;}
+    });
+    if(loaded>=6){allLoaded=true;recalc();if(!rafId)startLoop();}
+  }
+},3000);
+
+function recalc(){
+  var vh=window.innerHeight;
+  zo[0]=(INTRO_VH/100)*vh; // intro结束点
+  for(var i=0;i<6;i++){
+    var h=segDurs[i]*(VH_PER_SEC/100)*vh;
+    if(!h||h<1)h=20*vh/100;
+    zo[i+1]=zo[i]+h;
+  }
+  totalH=zo[6]+(OUTRO_VH/100)*vh;
+  document.body.style.height=totalH+'px';
+}
+
+var rt;
+window.addEventListener('resize',function(){
+  clearTimeout(rt);
+  rt=setTimeout(function(){if(allLoaded)recalc();},150);
+});
+
+// ── 根据scrollY确定当前section (-1=intro, 0..5=seg, 6=outro)
+function getSection(sy){
+  if(sy<zo[0])return -1;
+  if(sy>=zo[6])return 6;
+  for(var i=0;i<6;i++)if(sy<zo[i+1])return i;
+  return 5;
+}
+
+// ── 主循环：playbackRate + 缓动平滑驱动 ──
+function loop(){
+  rafId=requestAnimationFrame(loop);
+  if(!allLoaded)return;
+
+  var sy=window.scrollY||0;
+  if(sy===lastScrollY){idleFrames++;if(idleFrames>IDLE_LIMIT&&idleFrames%4!==0)return;}
+  else{idleFrames=0;lastScrollY=sy;}
+
+  var seg=getSection(sy);
+
+  if(seg===-1){
+    if(seg!==currentSeg){switchToIntro();currentSeg=-1;}
+    if(vIntro.paused)vIntro.play().catch(function(){});
+  }
+  else if(seg===6){
+    if(seg!==currentSeg){switchToOutro();currentSeg=6;}
+    if(vOutro.paused)vOutro.play().catch(function(){});
+  }
+  else {
+    if(seg!==currentSeg){
+      crossfadeToSeg(seg, currentSeg);
+      currentSeg=seg;
+      smoothP=0; // 新段重置缓动进度
+    }
+
+    var v=segVids[seg];
+    var zoneStart=seg===0?zo[0]:zo[seg];
+    var zoneLen=Math.max(1,zo[seg+1]-zoneStart);
+    var rawP=(sy-zoneStart)/zoneLen;
+    rawP=Math.max(0,Math.min(.98,rawP));
+    
+    // 🌟 核心缓动：smoothP 逐步逼近 rawP，消除间断滚动的抖动
+    smoothP=smoothP+(rawP-smoothP)*.07;
+    
+    var target=smoothP*segDurs[seg];
+    var diff=target-v.currentTime;
+
+    if(diff>.003){
+      // 落后 → 温和加速追赶 (最多2.5倍速，不会暴跳)
+      var rate=1+diff*18;
+      if(rate>2.5)rate=2.5;
+      if(rate<.5)rate=.5;
+      v.playbackRate=rate;
+      if(v.paused)v.play().catch(function(){});
+    }else if(diff<-.06){
+      // 大幅超前(回滚) → seek回退
+      v.pause();
+      v.currentTime=target;
+    }else{
+      // 同步 → 暂停，避免视频自己跑过头再被拉回来循环抖动
+      v.pause();
+    }
+  }
+
+  updateCards(seg,sy);
+}
+
+function switchToIntro(){
+  vIntro.style.opacity='1'; vIntro.style.zIndex='4';
+  vOutro.style.opacity='0'; vOutro.style.zIndex='0';
+  segVids.forEach(function(v,i){v.style.opacity='0';setTimeout(function(){v.pause()},400);});
+}
+function switchToOutro(){
+  vIntro.style.opacity='0'; vIntro.style.zIndex='0';
+  vOutro.style.opacity='1'; vOutro.style.zIndex='4';
+  segVids.forEach(function(v,i){v.style.opacity='0';setTimeout(function(){v.pause()},400);});
+}
+function crossfadeToSeg(newIdx, oldIdx){
+  vIntro.style.opacity='0'; vIntro.style.zIndex='0';
+  vOutro.style.opacity='0'; vOutro.style.zIndex='0';
+
+  // 新段：重置到开头，显示
+  segVids[newIdx].currentTime=0;
+  segVids[newIdx].playbackRate=1;
+  segVids[newIdx].style.opacity='1';
+  segVids[newIdx].style.zIndex='4';
+  segVids[newIdx].play().catch(function(){});
+
+  // 旧段：淡出
+  if(oldIdx>=0&&oldIdx<6){
+    segVids[oldIdx].style.opacity='0';
+    segVids[oldIdx].style.zIndex='3';
+    (function(o){setTimeout(function(){segVids[o].pause()},400)})(oldIdx);
+  }
+}
+
+function updateCards(seg,sy){
+  cardsArr.forEach(function(c,i){
+    var op=0;
+    if(i===0&&seg===-1)op=1;
+    else if(i===5&&seg===6)op=1;
+    else if(seg===i){
+      var zs=i===0?zo[0]:zo[i];
+      var ze=zo[i+1];
+      var p=(sy-zs)/Math.max(1,ze-zs);
+      p=Math.max(0,Math.min(1,p));
+      if(p<.06)op=p/.06;else if(p>.94)op=(1-p)/.06;else op=1;
+      op=Math.max(0,Math.min(1,op));
+    }
+    if(op>.01){c.classList.add('visible');c.style.opacity=String(op);}
+    else{c.classList.remove('visible');c.style.opacity='0';}
+  });
+}
+
+function startLoop(){
+  if(rafId)cancelAnimationFrame(rafId);
+  lastScrollY=window.scrollY||0;idleFrames=0;
+  rafId=requestAnimationFrame(loop);
+}
+
+window.addEventListener('scroll',function(){idleFrames=0;},{passive:true});
+window.addEventListener('wheel',function(){idleFrames=0;},{passive:true});
+window.addEventListener('touchmove',function(){idleFrames=0;},{passive:true});
+
+startLoop();
+vIntro.play().catch(function(){
+  document.addEventListener('click',function p(){vIntro.play().catch(function(){});},{once:true});
+});
+cardsArr[0].classList.add('visible');cardsArr[0].style.opacity='1';
+})();
+</script>
+</body>
+</html>
